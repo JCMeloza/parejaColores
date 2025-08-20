@@ -6,24 +6,29 @@ class Game {
 	#cols;
 	#idElement;
 	#boxes;
-    element;
+	element;
 	constructor(rows, cols, idElement = "game") {
 		this.#rows = rows;
 		this.#cols = cols;
 		this.#idElement = idElement;
-        this.element = document.getElementById(this.#idElement);
+		this.element = document.getElementById(this.#idElement);
 		this.#boxes = [];
 		this.createBoxes();
-        this.paintBoxes();
+		this.paintBoxes();
+
+		this.element.addEventListener("click", ()=>{
+			this.checkOpenBoxes();
+		})
+
 
 		console.log("se ha creado un objeto tipo Game");
 	}
-    get rows() {
-        return this.#rows;
-    }
-    get cols() {
-        return this.#cols;
-    }
+	get rows() {
+		return this.#rows;
+	}
+	get cols() {
+		return this.#cols;
+	}
 
 	createRandomColors() {
 		let randomColors = [];
@@ -52,21 +57,41 @@ class Game {
 	}
 
 	paintBoxes() {
-        this.setCSSBoxTemplates();
+		this.setCSSBoxTemplates();
 		this.#boxes.map((box) => {
 			let newBoxDiv = document.createElement("div");
 			newBoxDiv.classList.add("box");
 			newBoxDiv.dataset.col = box.col;
 			newBoxDiv.dataset.row = box.row;
+			box.element = newBoxDiv;
+			box.addEventClick();
 			this.element.appendChild(newBoxDiv);
 		});
 	}
 
-    setCSSBoxTemplates(){
-        this.element.style.gridTemplateColumns = `repeat(${this.#cols}, 1fr)`;
-        this.element.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
-        
-    }
+	setCSSBoxTemplates() {
+		this.element.style.gridTemplateColumns = `repeat(${this.#cols}, 1fr)`;
+		this.element.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
+	}
+
+	checkOpenBoxes(){
+		//comprobamos si hay dos cajas abiertas
+		let nOpenBoxes = this.#boxes.filter((box) => box.open && box.free);
+		if(nOpenBoxes.length === 2) {
+			if(nOpenBoxes[0].color === nOpenBoxes[1].color) {
+				nOpenBoxes.map((box)=>{
+					box.free = false;
+					
+				});
+			} else {
+				setTimeout(() => {
+					nOpenBoxes.map((box) => {
+						box.resetColor();
+					});
+				}, 500);
+			}
+		}
+	}
 }
 
 export default Game;
