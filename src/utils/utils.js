@@ -1,4 +1,7 @@
-//funcion para mezclar un array
+/**
+ * Mezcla un array utilizando el algoritmo de Fisher-Yates.
+ * @param {Array} array - El array que se va a mezclar.
+ */
 function shuffleArray(array) {
 	let currentIndex = array.length;
 

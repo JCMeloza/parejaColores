@@ -7,6 +7,12 @@ class Game {
 	#idElement;
 	#boxes;
 	element;
+	/**
+	 * Constructor de la clase Game. Inicializa el tablero de juego.
+	 * @param {number} rows - Número de filas del tablero.
+	 * @param {number} cols - Número de columnas del tablero.
+	 * @param {string} idElement - ID del elemento HTML donde se renderizará el juego.
+	 */
 	constructor(rows, cols, idElement = "game") {
 		this.#rows = rows;
 		this.#cols = cols;
@@ -22,13 +28,25 @@ class Game {
 
 		console.log("se ha creado un objeto tipo Game");
 	}
+	/**
+	 * Devuelve el número de filas.
+	 * @returns {number}
+	 */
 	get rows() {
 		return this.#rows;
 	}
+	/**
+	 * Devuelve el número de columnas.
+	 * @returns {number}
+	 */
 	get cols() {
 		return this.#cols;
 	}
 
+	/**
+	 * Crea un array de colores aleatorios duplicados y barajados.
+	 * @returns {string[]} - Array de colores.
+	 */
 	createRandomColors() {
 		let randomColors = [];
 		for (let index = 0; index < (this.#cols * this.#rows) / 2; index++) {
@@ -44,6 +62,9 @@ class Game {
 		return randomColors;
 	}
 
+	/**
+	 * Crea las instancias de las cajas (Box) para el juego.
+	 */
 	createBoxes() {
 		let randomColors = this.createRandomColors();
 		for (let row = 0; row < this.#rows; row++) {
@@ -55,6 +76,9 @@ class Game {
 		}
 	}
 
+	/**
+	 * Pinta las cajas en el DOM y les añade los eventos.
+	 */
 	paintBoxes() {
 		this.setCSSBoxTemplates();
 		this.#boxes.map((box) => {
@@ -68,11 +92,17 @@ class Game {
 		});
 	}
 
+	/**
+	 * Establece las plantillas de CSS para el tablero de juego.
+	 */
 	setCSSBoxTemplates() {
 		this.element.style.gridTemplateColumns = `repeat(${this.#cols}, 1fr)`;
 		this.element.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
 	}
 
+	/**
+	 * Comprueba las cajas que están abiertas y si coinciden.
+	 */
 	checkOpenBoxes() {
 		//comprobamos si hay dos cajas abiertas
 		let nOpenBoxes = this.#boxes.filter((box) => box.open && box.free);
@@ -91,6 +121,10 @@ class Game {
 		}
 	}
 
+	/**
+	 * Obtiene el número de filas y columnas desde el localStorage o preguntando al usuario.
+	 * @returns {{rows: number, cols: number}} - Objeto con el número de filas y columnas.
+	 */
 	static getRowsCols() {
 		let rows, cols;
 		if (localStorage.getItem("rows") !== null && localStorage.getItem("cols") !== null) {
@@ -110,6 +144,9 @@ class Game {
 		return { rows, cols };
 	}
 
+	/**
+	 * Reinicia el juego eliminando los datos del localStorage y recargando la página.
+	 */
 	static resetGame(){
 		localStorage.removeItem("rows");
 		localStorage.removeItem("cols");
