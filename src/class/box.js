@@ -16,12 +16,12 @@ class Box {
 	 * @param {number} col - Columna de la caja.
 	 * @param {string} color - Color de la caja.
 	 */
-	constructor(row, col, color) {
+	constructor(row, col, color, free = true, open = false) {
 		this.#col = col;
 		this.#row = row;
 		this.#color = color;
-		this.#free = true;
-		this.#open = false;
+		this.#free = free;
+		this.#open = open;
 		console.log("se ha creado un objeto tipo Box");
 	}
 
