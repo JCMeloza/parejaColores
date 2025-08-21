@@ -1,5 +1,6 @@
 import { shuffleArray } from "../utils/utils";
 import Box from "./box";
+import Timer from "./Timer.js"
 
 class Game {
 	#rows;
@@ -7,6 +8,7 @@ class Game {
 	#idElement;
 	#boxes;
 	element;
+	timer;
 	/**
 	 * Constructor de la clase Game. Inicializa el tablero de juego.
 	 * @param {number} rows - Número de filas del tablero.
@@ -25,7 +27,7 @@ class Game {
 		this.element.addEventListener("click", () => {
 			this.checkOpenBoxes();
 		});
-
+		this.initTimer();
 		console.log("se ha creado un objeto tipo Game");
 	}
 	/**
@@ -41,6 +43,16 @@ class Game {
 	 */
 	get cols() {
 		return this.#cols;
+	}
+
+	initTimer(){
+		let timerContainer = document.createElement('h2');
+		timerContainer.setAttribute("id", "timerContainer");
+		timerContainer.innerHTML= '<span id="timer">00:00:00</span>';
+		let header = document.getElementById("boxHeader");
+		header.appendChild(timerContainer);
+		this.timer = new Timer();
+		this.timer.start();
 	}
 
 	/**
@@ -109,6 +121,16 @@ class Game {
 	 * Pinta las cajas en el DOM y les añade los eventos.
 	 */
 	paintBoxes() {
+		let header = document.createElement("header");
+		header.setAttribute("id", "boxHeader");
+		
+		this.element.appendChild(header);
+
+
+		let boxContainer =document.createElement("div");
+		boxContainer.setAttribute("id", "boxContainer");
+		this.element.appendChild(boxContainer);
+
 		this.setCSSBoxTemplates();
 		this.#boxes.map((box) => {
 			let newBoxDiv = document.createElement("div");
@@ -119,7 +141,7 @@ class Game {
 
 			box.element = newBoxDiv;
 			box.addEventClick();
-			this.element.appendChild(newBoxDiv);
+			boxContainer.appendChild(newBoxDiv);
 		});
 	}
 
@@ -127,8 +149,9 @@ class Game {
 	 * Establece las plantillas de CSS para el tablero de juego.
 	 */
 	setCSSBoxTemplates() {
-		this.element.style.gridTemplateColumns = `repeat(${this.#cols}, 1fr)`;
-		this.element.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
+		let boxContainer = document.getElementById("boxContainer");
+		boxContainer.style.gridTemplateColumns = `repeat(${this.#cols}, 1fr)`;
+		boxContainer.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
 	}
 
 	/**
