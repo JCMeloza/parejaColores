@@ -16,10 +16,9 @@ class Game {
 		this.createBoxes();
 		this.paintBoxes();
 
-		this.element.addEventListener("click", ()=>{
+		this.element.addEventListener("click", () => {
 			this.checkOpenBoxes();
-		})
-
+		});
 
 		console.log("se ha creado un objeto tipo Game");
 	}
@@ -74,14 +73,13 @@ class Game {
 		this.element.style.gridTemplateRows = `repeat(${this.#rows}, 1fr)`;
 	}
 
-	checkOpenBoxes(){
+	checkOpenBoxes() {
 		//comprobamos si hay dos cajas abiertas
 		let nOpenBoxes = this.#boxes.filter((box) => box.open && box.free);
-		if(nOpenBoxes.length === 2) {
-			if(nOpenBoxes[0].color === nOpenBoxes[1].color) {
-				nOpenBoxes.map((box)=>{
+		if (nOpenBoxes.length === 2) {
+			if (nOpenBoxes[0].color === nOpenBoxes[1].color) {
+				nOpenBoxes.map((box) => {
 					box.free = false;
-					
 				});
 			} else {
 				setTimeout(() => {
@@ -91,6 +89,31 @@ class Game {
 				}, 500);
 			}
 		}
+	}
+
+	static getRowsCols() {
+		let rows, cols;
+		if (localStorage.getItem("rows") !== null && localStorage.getItem("cols") !== null) {
+			rows = parseInt(localStorage.getItem("rows"));
+			cols = parseInt(localStorage.getItem("cols"));
+		} else {
+			rows = parseInt(prompt("Ingrese el número de filas del tablero:"));
+			cols = parseInt(prompt("Ingrese el número de columnas del tablero:"));
+			if (isNaN(rows) || isNaN(cols) || rows <= 0 || cols <= 0) {
+				alert("Por favor, ingrese números válidos para filas y columnas.");
+				return this.getRowsCols();
+			}
+			localStorage.setItem("rows", rows);
+			localStorage.setItem("cols", cols);
+		}
+
+		return { rows, cols };
+	}
+
+	static resetGame(){
+		localStorage.removeItem("rows");
+		localStorage.removeItem("cols");
+		location.reload();
 	}
 }
 
