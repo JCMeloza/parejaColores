@@ -66,14 +66,43 @@ class Game {
 	 * Crea las instancias de las cajas (Box) para el juego.
 	 */
 	createBoxes() {
-		let randomColors = this.createRandomColors();
-		for (let row = 0; row < this.#rows; row++) {
-			for (let col = 0; col < this.#cols; col++) {
-				let color = randomColors.shift();
-				let newBox = new Box(row, col, color);
+		this.#boxes = [];
+		//si hay datos en localStorage, creo las boxes desde ahi, si no las genero nuevas
+		if (localStorage.getItem("boxes") !== null) {
+			let boxesFromLocalStorage = JSON.parse(localStorage.getItem("boxes"));
+			boxesFromLocalStorage.map((box) => {
+				let newBox = new Box(box.row, box.col, box.color, box.free, box.open);
 				this.#boxes.push(newBox);
+			});
+		} else {
+			let randomColors = this.createRandomColors();
+
+			for (let row = 0; row < this.#rows; row++) {
+				for (let col = 0; col < this.#cols; col++) {
+					let color = randomColors.shift();
+
+					let newBox = new Box(row, col, color);
+					this.#boxes.push(newBox);
+				}
 			}
+			this.boxesToLocalStorage();
 		}
+	}
+
+	/**
+	 *
+	 */
+	boxesToLocalStorage() {
+		let arrayBoxesrsToLocalStorage = this.#boxes.map((box) => {
+			return {
+				row: box.row,
+				col: box.col,
+				color: box.color,
+				free: box.free,
+				open: box.open,
+			};
+		});
+		localStorage.setItem("boxes", JSON.stringify(arrayBoxesrsToLocalStorage));
 	}
 
 	/**
@@ -84,8 +113,10 @@ class Game {
 		this.#boxes.map((box) => {
 			let newBoxDiv = document.createElement("div");
 			newBoxDiv.classList.add("box");
-			newBoxDiv.dataset.col = box.col;
-			newBoxDiv.dataset.row = box.row;
+			if (!box.free || box.open) {
+				newBoxDiv.style.backgroundColor = box.color;
+			}
+
 			box.element = newBoxDiv;
 			box.addEventClick();
 			this.element.appendChild(newBoxDiv);
@@ -118,6 +149,8 @@ class Game {
 					});
 				}, 500);
 			}
+		} else {
+			this.boxesToLocalStorage();
 		}
 	}
 
@@ -147,9 +180,10 @@ class Game {
 	/**
 	 * Reinicia el juego eliminando los datos del localStorage y recargando la página.
 	 */
-	static resetGame(){
+	static resetGame() {
 		localStorage.removeItem("rows");
 		localStorage.removeItem("cols");
+		localStorage.removeItem("boxes");
 		location.reload();
 	}
 }
