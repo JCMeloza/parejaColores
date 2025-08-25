@@ -1,6 +1,6 @@
 import { shuffleArray } from "../utils/utils";
 import Box from "./box";
-import Timer from "./Timer.js"
+import Timer from "./Timer.js";
 
 class Game {
 	#rows;
@@ -45,10 +45,10 @@ class Game {
 		return this.#cols;
 	}
 
-	initTimer(){
-		let timerContainer = document.createElement('h2');
+	initTimer() {
+		let timerContainer = document.createElement("h2");
 		timerContainer.setAttribute("id", "timerContainer");
-		timerContainer.innerHTML= '<span id="timer">00:00:00</span>';
+		timerContainer.innerHTML = '<span id="timer">00:00:00</span>';
 		let header = document.getElementById("boxHeader");
 		header.appendChild(timerContainer);
 		this.timer = new Timer();
@@ -123,11 +123,10 @@ class Game {
 	paintBoxes() {
 		let header = document.createElement("header");
 		header.setAttribute("id", "boxHeader");
-		
+
 		this.element.appendChild(header);
 
-
-		let boxContainer =document.createElement("div");
+		let boxContainer = document.createElement("div");
 		boxContainer.setAttribute("id", "boxContainer");
 		this.element.appendChild(boxContainer);
 
@@ -175,6 +174,18 @@ class Game {
 		} else {
 			this.boxesToLocalStorage();
 		}
+		this.checkFinisGame();
+	}
+
+	checkFinisGame() {
+		let freeBox = this.#boxes.filter((box) => box.free);
+		if (freeBox.length === 0) {
+			setTimeout(() => {
+				this.timer.stop();
+				alert("¡Felicidades! Has completado el juego.");
+				Game.resetGame();
+			}, 400);
+		}
 	}
 
 	/**
@@ -207,6 +218,7 @@ class Game {
 		localStorage.removeItem("rows");
 		localStorage.removeItem("cols");
 		localStorage.removeItem("boxes");
+		localStorage.removeItem("timer");
 		location.reload();
 	}
 }
