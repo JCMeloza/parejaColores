@@ -9,19 +9,35 @@ class Timer {
 	idElement;
 
 	constructor(idElement = "timer") {
-		this.ms = 0;
-		this.sec = 0;
-		this.min = 0;
 		this.idElement = idElement;
+		if (localStorage.getItem("timer") !== null) {
+			let timerFromLocalStorage = JSON.parse(localStorage.getItem("timer"));
+			this.sec = parseInt(timerFromLocalStorage.sec);
+			this.min = parseInt(timerFromLocalStorage.min);
+			this.ms = parseInt(timerFromLocalStorage.ms);
+		} else {
+			this.ms = 0;
+			this.sec = 0;
+			this.min = 0;
+		}
 	}
 	start() {
-		this.count = setInterval(()=> {
+		this.count = setInterval(() => {
 			if (this.ms == 100) {
 				this.ms = 0;
 				if (this.sec == 60) {
 					this.sec = 0;
 					this.min++;
 				} else {
+					if (this.sec % 5 == 0) {
+						let timerObject = {
+							min: this.min,
+							sec: this.sec,
+							ms: this.ms,
+						};
+						localStorage.setItem("timer", JSON.stringify(timerObject));
+					}
+
 					this.sec++;
 				}
 			} else {
