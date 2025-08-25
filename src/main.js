@@ -13,4 +13,3 @@ let resetButton= document.getElementById("reset");
 resetButton.addEventListener("click", () => {
     Game.resetGame();
 });
-//54:35
